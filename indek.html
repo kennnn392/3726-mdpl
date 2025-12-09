@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3726 MDPL - Sebuah Bab Tentangmu</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS untuk Tampilan Novel */
+        :root {
+            --primary-color: #3b596d; /* Dark Blue-Gray */
+            --secondary-color: #e9e5e2; /* Soft Cream */
+            --accent-color: #a04040; /* Muted Red */
+        }
+        
+       body {
+    font-family: 'Lora', serif;
+    margin: 0;
+    padding: 0;
+    /* Kita timpa background-color dengan gambar */
+    color: var(--secondary-color); 
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+
+    /* ==================================== */
+    /* KODE UNTUK LATAR BELAKANG GAMBAR */
+    /* ==================================== */
+    background-image: url('3726 mdpl.jpg'); 
+    background-size: cover; 
+    background-position: center center; 
+    background-attachment: fixed; /* Latar belakang tidak ikut bergerak */
+    background-repeat: no-repeat;
+    /* ==================================== */
+}
+
+        .container {
+    width: 90%;
+    max-width: 800px;
+    padding: 40px;
+    /* Ganti menjadi sedikit lebih solid untuk kontras yang lebih baik */
+    background-color: rgba(0, 0, 0, 0.5); 
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); /* Shadow lebih kuat */
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+}
+
+        #novel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+
+        #subtitle {
+            font-style: italic;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            border-bottom: 1px dashed var(--secondary-color);
+            padding-bottom: 15px;
+        }
+
+        #message-area {
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            padding: 20px;
+        }
+
+        #current-message {
+            font-size: 1.5em;
+            font-style: italic;
+            color: var(--secondary-color);
+            line-height: 1.5;
+            opacity: 0; /* Awalnya tersembunyi */
+        }
+
+        #instruction {
+            margin-top: 30px;
+            color: var(--accent-color);
+            font-size: 0.9em;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Status Audio */
+        #audio-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Keyframe Animasi */
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* Kelas untuk animasi pesan masuk/keluar */
+        .fade-out {
+            opacity: 0 !important;
+            transform: scale(0.95);
+        }
+
+        .fade-in {
+            opacity: 1 !important;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body onclick="displayNextMessage()">
+
+    <audio id="novelMusic" loop autoplay muted>
+    <source src="about you.mp3" type="audio/mp3">
+</audio>
+   
+</audio>
+    
+
+    <div class="container">
+        <div id="audio-status">
+            <span id="mute-icon">🔇</span> <span id="song-title">The 1975 - About You</span>
+        </div>
+        
+        <div id="novel-title">3726 MDPL</div>
+        <div id="subtitle">Sebuah Bab yang Selalu Tentangmu</div>
+
+        <div id="message-area">
+            <p id="current-message" class="fade-in">
+                Klik dibawah ini yaa
+            </p>
+        </div>
+
+        <div id="instruction">
+            [ Heyy yang iniii! ]
+        </div>
+    </div>
+
+   <script>
+        const music = document.getElementById('novelMusic');
+        const messageElement = document.getElementById('current-message');
+        const muteIcon = document.getElementById('mute-icon');
+        const instructionElement = document.getElementById('instruction');
+
+        let currentMessageIndex = 0;
+        let isFirstClick = true;
+
+        // Pesan (sama seperti sebelumnya)
+        const messages = [
+            "Di antara hiruk pikuk kota, kau adalah puncak 3726 mdpl-ku; tempat di mana hanya rindu yang bisa mencapai ketinggian itu.",
+            "Setiap pagi, aku mencari jejakmu dalam embun, seperti pendaki yang kehilangan kompas, tujuanku kini hanya bayanganmu.",
+            "Aku belajar dari senja di ketinggian: keindahan terbesar seringkali datang bersama perpisahan yang dingin. Tapi aku rindu kehangatan di tenda kita.",
+            "Jika cinta adalah jalur pendakian, aku rela tersesat selamanya, asal peta itu adalah kenangan tentang tawamu yang bergema di punggung gunung.",
+            "Pernahkah kau tahu, aku masih sering berdiri menatap cakrawala, berharap siluetmu muncul, seolah kau baru saja selesai mendaki dari masa lalu.",
+            "Dan kini, di keheningan ini, The 1975 menyanyikan apa yang tidak bisa kuucapkan: I can't stop thinking about you.",
+            "— Selesai. —"
+        ];
+        
+        // Fungsi untuk mengaktifkan musik (dijalankan saat klik)
+        function unmuteMusic() {
+            if (music.muted) {
+                music.muted = false;
+                muteIcon.textContent = '🔊';
+            }
+        }
+
+        // Fungsi untuk menampilkan pesan berikutnya dengan animasi
+        function displayNextMessage() {
+            if (currentMessageIndex >= messages.length) {
+                return; // Berhenti jika pesan sudah habis
+            }
+
+            if (isFirstClick) {
+                // Saat klik pertama, panggil play() dan unmute
+                music.play().catch(e => console.error("Play failed on first click:", e));
+                unmuteMusic();
+                isFirstClick = false;
+            }
+
+            // Animasi pesan keluar
+            messageElement.classList.remove('fade-in');
+            messageElement.classList.add('fade-out');
+
+            // Setelah animasi fade-out selesai, ganti teks dan fade-in
+            setTimeout(() => {
+                messageElement.textContent = messages[currentMessageIndex];
+                messageElement.classList.remove('fade-out');
+                messageElement.classList.add('fade-in');
+                currentMessageIndex++;
+
+                if (currentMessageIndex > messages.length) {
+                    instructionElement.textContent = "Terima kasih telah membaca. Putar lagi halaman ini jika rindu.";
+                }
+
+            }, 500); // Durasi sesuai dengan transisi CSS (0.5s)
+        }
+        
+        // **********************************************
+        // Tambahkan Play() di awal untuk memaksa pemutaran
+        // **********************************************
+        music.play().then(() => {
+            console.log("Musik berhasil diputar secara muted.");
+        }).catch(e => {
+            console.log("Autoplay ditolak. Menunggu interaksi klik pertama.");
+            // Jika ditolak, musik akan diputar saat klik pertama di dalam displayNextMessage()
+        });
+        // **********************************************
+
+
+        // Tampilkan pesan pertama saat loading (klik awal)
+        document.addEventListener('DOMContentLoaded', () => {
+            messageElement.classList.add('fade-in');
+        });
+
+    </script>
